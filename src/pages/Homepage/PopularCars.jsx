@@ -48,7 +48,7 @@ const PopularCars = () => {
                         <CardMedia component="img" image={car.logo} alt="green iguana" />
 
                         <CardContent sx={{paddingBottom: '0!important'}}>
-                            <Typography gutterBottom variant="h5" component="div">
+                            <Typography gutterBottom variant="h6" component="div">
                                 {car.brand}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">

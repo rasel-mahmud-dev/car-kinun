@@ -17,6 +17,17 @@
     transform: translateX(-50%);
 }
 
+@media screen and (max-width: 640px) {
+  .hero-root{
+    height: calc(100vh - 20vh - var(--header-height));
+  }
+}
+@media screen and (max-width: 1100px) {
+  .hero-car-image{
+    width: 80%;
+  }
+}
+
 .icon-orange{
     background-color: rgba(255,70,5,.1);
     color: #ff4605;

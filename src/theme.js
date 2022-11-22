@@ -5,8 +5,14 @@ let theme = createTheme({
         primary: {
             main: '#ff7f58',
         },
+        red: {
+            main: '#d13d3d',
+        },
         secondary: {
             main: '#ffdc4f',
+        },
+        blue: {
+            main: '#3c5bcf',
         },
         dark: {
             100: '#7a7a7a',
