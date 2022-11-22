@@ -12,20 +12,29 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import {useContext, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import AppContext from "../../store/AppContext";
 import useStore from "../../hooks/useStore";
-import {Link} from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = [
+    { label: "Services", href: "/#services" },
+    { label: "Cars", href: "/#cars" },
+    { label: "Reviews", href: "/#reviews" },
+    { label: "Pricing", href: "services" },
+    { label: "NewComing", to: "services" },
+];
+
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navigation() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [navFixed, setNavFixed] = useState(false);
 
-    const [{auth}] = useStore()
+    const location = useLocation();
 
+    const [{ auth }] = useStore();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -42,8 +51,27 @@ function Navigation() {
         setAnchorElUser(null);
     };
 
+    function handleResize() {
+        if (window.scrollY > 300) {
+            setNavFixed(true);
+        } else {
+            setNavFixed(false);
+        }
+    }
+
+    useEffect(() => {
+        setNavFixed(location.pathname !== "/");
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (location.pathname === "/") {
+            window.addEventListener("scroll", handleResize);
+        }
+        return () => window.removeEventListener("scroll", handleResize);
+    }, []);
+
     return (
-        <AppBar position="fixed" color={"transparent"} style={{ boxShadow: "none" }}>
+        <AppBar position="fixed" color={"transparent"} className={navFixed ? "nav-top-fixed" : "nav"} style={{ boxShadow: navFixed ? 2 : "none" }}>
             <Container maxWidth={"xl"}>
                 <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
                     {/*<Car sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
@@ -56,15 +84,13 @@ function Navigation() {
                             variant="h6"
                             noWrap
                             component="a"
-                            href="/"
+                            href="/#"
                             sx={{
                                 mr: 2,
-                                ml: 2,
-                                display: { xs: "none", md: "flex" },
-                                fontFamily: "monospace",
+                                ml: 1,
                                 fontWeight: 700,
                                 letterSpacing: ".1rem",
-                                color: "light.500",
+                                color: "primary.main",
                                 textDecoration: "none",
                             }}
                         >
@@ -144,11 +170,11 @@ function Navigation() {
 
                     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, alignItems: "center", justifyContent: "flex-end" }}>
                         {pages.map((page) => (
-                            <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: "white", display: "block" }}>
-                                {page}
+                            <Button key={page.label} onClick={handleCloseNavMenu} sx={{ my: 2, display: "block" }}>
+                                {page.href ? <a href={page.href}>{page.label}</a> : <NavLink to={page.to}>{page.label}</NavLink>}
                             </Button>
                         ))}
-                        { auth ? (
+                        {auth ? (
                             <Box>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -178,14 +204,13 @@ function Navigation() {
                                     ))}
                                 </Menu>
                             </Box>
-                        ): (
+                        ) : (
                             <Box>
-                                <Link to="/login" style={{textDecoration: "none"}}>
+                                <Link to="/login" style={{ textDecoration: "none" }}>
                                     <Button variant="outlined">Login</Button>
                                 </Link>
                             </Box>
-
-                        ) }
+                        )}
                     </Box>
                 </Toolbar>
             </Container>

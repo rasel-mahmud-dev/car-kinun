@@ -138,7 +138,7 @@ const WhyChooseSection = () => {
     ];
 
     return (
-        <Box mt={20} className="container">
+        <Box className="container section" id="services">
             <Typography component="h1" textAlign="center" fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.400">
                 Why choose us?
             </Typography>

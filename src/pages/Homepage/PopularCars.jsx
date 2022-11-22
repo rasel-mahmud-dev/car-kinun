@@ -27,7 +27,7 @@ const PopularCars = () => {
     }
 
     return (
-        <Box mt={15} className="container">
+        <Box  className="container section" id="cars">
             <Box sx={{ display: { xs: "block", md: "flex" }, justifyContent: "space-between", alignItems: "center" }}>
                 <Typography component="h1" textAlign={{ xs: "center" }} fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.300">
                     Popular Cars
