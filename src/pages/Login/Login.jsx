@@ -5,7 +5,6 @@ import { Google } from "@mui/icons-material";
 import { Form, Link } from "react-router-dom";
 import styles from "../../styles";
 
-
 const Login = () => {
     const [data, setData] = useState({
         email: { label: "Enter Email", required: true, type: "email", value: "" },
@@ -73,74 +72,80 @@ const Login = () => {
     }
 
     return (
-        <Box className="container">
+        <Box className="container" mt={8}>
             {passwordResetModal()}
 
-            <Box sx={{ maxWidth: 400, m: "100px auto", p: 3, borderRadius: 2 }} className="card-shadow">
-                <Typography sx={{ fontSize: 30, fontWeight: "bold", textAlign: "center" }}>Login Form</Typography>
-                <Form onSubmit={handleSubmit}>
-                    <Box>
-                        {Object.keys(data).map((key) => (
-                            <>
-                                <FormGroup sx={{ mt: 1 }} key={key}>
-                                    <TextField
-                                        onChange={handleChange}
-                                        value={data[key].value}
-                                        required={data[key].required}
-                                        name={key}
-                                        label={data[key].label}
-                                        type={data[key].type}
-                                        variant="standard"
-                                    />
-                                </FormGroup>
-                            </>
-                        ))}
+            <Typography sx={{ fontSize: 30, fontWeight: "bold", textAlign: "center" }}>Login Form</Typography>
 
-                        <Box mt={4} display="flex" alignItems="center" justifyContent="space-between">
-                            <Box display="flex" alignItems="center">
-                                <Typography fontSize={14} color="light.200">
-                                    Forgot password ?
-                                </Typography>
-                                <Typography onClick={() => setOpenPassResetModal(true)} sx={{ cursor: "pointer" }} fontSize={14} ml={1} color="blue.main">
-                                    Click to reset
-                                </Typography>
-                            </Box>
-                            <Button onClick={handleFillFakeUserData} sx={{ textTransform: "capitalize" }} color="blue" variant="contained" size={"small"}>
-                                Use Fake User
-                            </Button>
-                        </Box>
+            <Box sx={{ display: { xs: "block", md: "grid", alignItems: "center" }, gridTemplateColumns: "8fr 10fr" }}>
+                <img className="w-full" style={{flexDirection: 'column'}} src="/cars/mobile-login-concept-illustration_114360-83.webp" />
 
-                        <Button type="submit" fullWidth={true} variant="contained" sx={{ mt: 2 }}>
-                            Login
-                        </Button>
+                <Box width="100%" sx={{maxWidth: 450, m: "20px auto", p: 3, borderRadius: 2, boxSizing: "border-box" }} className="card-shadow">
 
-                        <Divider sx={{ mt: 4 }}>
-                            <Chip label="Or" />
-                        </Divider>
-
+                    <Form onSubmit={handleSubmit}>
                         <Box>
-                            <Button fullWidth={true} variant="contained" color="red" sx={{ mt: 2, display: "flex", alignItems: "center", gap: "4px" }}>
-                                <Google sx={{ fontSize: "18px" }} />
-                                Login With Google
-                            </Button>
-                            <Button fullWidth={true} color="blue" variant="contained" sx={{ mt: 2, display: "flex", alignItems: "center", gap: "4px" }}>
-                                <Google sx={{ fontSize: "18px" }} />
-                                Login With Google
+                            {Object.keys(data).map((key) => (
+                                <>
+                                    <FormGroup sx={{ mt: 1 }} key={key}>
+                                        <TextField
+                                            onChange={handleChange}
+                                            value={data[key].value}
+                                            required={data[key].required}
+                                            name={key}
+                                            label={data[key].label}
+                                            type={data[key].type}
+                                            variant="standard"
+                                        />
+                                    </FormGroup>
+                                </>
+                            ))}
+
+                            <Box mt={4} display="flex" alignItems="center" justifyContent="space-between">
+                                <Box display="flex" alignItems="center">
+                                    <Typography fontSize={14} color="light.200">
+                                        Forgot password ?
+                                    </Typography>
+                                    <Typography onClick={() => setOpenPassResetModal(true)} sx={{ cursor: "pointer" }} fontSize={14} ml={1} color="blue.main">
+                                        Click to reset
+                                    </Typography>
+                                </Box>
+                                <Button onClick={handleFillFakeUserData} sx={{ textTransform: "capitalize" }} color="blue" variant="contained" size={"small"}>
+                                    Use Fake User
+                                </Button>
+                            </Box>
+
+                            <Button type="submit" fullWidth={true} variant="contained" sx={{ mt: 2 }}>
+                                Login
                             </Button>
 
-                            <Box mt={3} mb={2} display="flex" justifyContent="center" alignItems="center">
-                                <Typography fontSize={14} color="light.200">
-                                    Not a member?
-                                </Typography>
-                                <Link to="/registration">
-                                    <Typography sx={{ cursor: "pointer" }} fontSize={14} ml={1} color="blue.main">
-                                        create an account
+                            <Divider sx={{ mt: 4 }}>
+                                <Chip label="Or" />
+                            </Divider>
+
+                            <Box>
+                                <Button fullWidth={true} variant="contained" color="red" sx={{ mt: 2, display: "flex", alignItems: "center", gap: "4px" }}>
+                                    <Google sx={{ fontSize: "18px" }} />
+                                    Login With Google
+                                </Button>
+                                <Button fullWidth={true} color="blue" variant="contained" sx={{ mt: 2, display: "flex", alignItems: "center", gap: "4px" }}>
+                                    <Google sx={{ fontSize: "18px" }} />
+                                    Login With Google
+                                </Button>
+
+                                <Box mt={3} mb={2} display="flex" justifyContent="center" alignItems="center">
+                                    <Typography fontSize={14} color="light.200">
+                                        Not a member?
                                     </Typography>
-                                </Link>
+                                    <Link to="/registration">
+                                        <Typography sx={{ cursor: "pointer" }} fontSize={14} ml={1} color="blue.main">
+                                            create an account
+                                        </Typography>
+                                    </Link>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
-                </Form>
+                    </Form>
+                </Box>
             </Box>
         </Box>
     );
