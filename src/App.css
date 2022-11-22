@@ -10,3 +10,16 @@
   padding-left: 15px;
   padding-right: 15px
 }
+
+li{
+  list-style: none;
+}
+
+
+.w-full{
+  width: 100%;
+}
+
+.card-shadow{
+    box-shadow: 1px 4px 18px -4px #e5e5e5 !important
+}

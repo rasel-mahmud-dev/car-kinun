@@ -31,6 +31,11 @@ let theme = createTheme({
             900: '#f8f8f8',
         },
     },
+    components: {
+        card: {
+            boxShadow: "1px 4px 18px -4px #e5e5e5"
+        }
+    }
 });
 
 theme = createTheme(theme, {

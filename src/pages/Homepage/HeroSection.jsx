@@ -1,8 +1,7 @@
 import React from 'react';
 import {Box, Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import theme from "../../theme.js";
+
 
 const HeroSection = () => {
     return (
@@ -11,7 +10,7 @@ const HeroSection = () => {
 
                 <div className="container">
                     <Box position="absolute" maxWidth={700} top="20%">
-                        <Typography component="h1" fontSize={90} fontWeight={"bold"} lineHeight={0.9} color="light.800">
+                        <Typography component="h1" fontSize={90} fontWeight={"bold"} lineHeight={0.9} color="primary">
                             Find your
                             dream car
                         </Typography>
