@@ -20,28 +20,12 @@ li {
 }
 
 
-.nav-top-fixed{
-    background-color: white !important;
-  box-shadow: 0px 2px 10px -10px rgb(0 0 0 / 20%), 0px 4px 15px 2px rgb(0 0 0 / 14%), 0px 1px 23px -21px rgba(0, 0, 0, 0.07) !important;
-  .MuiButton-text{
-    a {
-      color: #232323;
-    }
-  }
-}
-.MuiButton-text{
-  a {
-    color: #eeeeee;
-    text-decoration: none;
-  }
-}
-
 .w-full {
   width: 100%;
 }
 
 .card-shadow {
-  box-shadow: 1px 4px 18px -4px #e5e5e5 !important
+  box-shadow: 1px 2px 20px -5px #e5e5e5 !important
 }
 
 .MuiInput-root {
@@ -51,4 +35,9 @@ li {
 }
 .MuiButton-contained{
   color: #eeeeee !important;
+}
+
+.MuiButton-text a.active{
+  color: #ff7f58 !important;
+  font-weight: 600;
 }

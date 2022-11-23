@@ -72,7 +72,7 @@ const Login = () => {
     }
 
     return (
-        <Box className="container" mt={8}>
+        <Box className="container" mt={4}>
             {passwordResetModal()}
 
             <Typography sx={{ fontSize: 30, fontWeight: "bold", textAlign: "center" }}>Login Form</Typography>
