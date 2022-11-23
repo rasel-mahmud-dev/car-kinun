@@ -1,14 +1,28 @@
 import express from "express";
 import Car from "../models/Car";
+import response from "../response";
 
 const router = express.Router()
 
 
+router.get("/count", async function (req, res, next) {
+    try {
+        let cars = await (await Car.collection).countDocuments()
+        response(res, cars)
+    } catch (ex) {
+        next(ex)
+    }
+})
+
 router.get("/", async function (req, res, next) {
     try {
-
-        let cars = await (await Car.collection).find().toArray()
-        res.send(cars)
+        const {perPage=1, currentPage = 20} = req.query
+        let cars = await (await Car.collection)
+            .find()
+            .skip((Number(currentPage) - 1) * Number(perPage))
+            .limit(Number(perPage))
+            .toArray()
+        response(res, cars)
     } catch (ex) {
         next(ex)
     }
@@ -30,9 +44,9 @@ router.post("/", async function (req, res, next) {
 
         newCar = await newCar.save()
         if (newCar) {
-            res.status(201).send(newCar)
+            response(res, newCar, 201)
         } else {
-            res.send("Car insert fail")
+            response(res, "Car insert fail", 403)
         }
     } catch (ex) {
         next(ex)

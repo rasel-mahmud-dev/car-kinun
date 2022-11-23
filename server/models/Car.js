@@ -8,6 +8,7 @@ class Car extends Common{
     price = 0
     model = ""
     brand = ""
+    image = ""
     userId = ""
     description = ""
     attributes = {}
@@ -19,6 +20,7 @@ class Car extends Common{
         this.name = data.name
         this.price = Number(data.price)
         this.model = data.model
+        this.image = data.image
         this.brand = data.brand
         this.userId = data.userId
         this.description = data.description

@@ -41,3 +41,9 @@ li {
   color: #ff7f58 !important;
   font-weight: 600;
 }
+.card-image{
+  //max-height: 100px;
+  object-fit: cover;
+  max-width: 250px !important;
+  //height: 100%;
+}

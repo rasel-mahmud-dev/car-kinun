@@ -1,32 +1,29 @@
 import React, {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
-import {Autocomplete, Box, Card, CardActions, CardContent, CardMedia, Grid, Pagination, TextField} from "@mui/material";
+import {
+    Autocomplete,
+    Box,
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia, FormControl,
+    Grid,
+    InputLabel,
+    Pagination, Select,
+    TextField
+} from "@mui/material";
 import Button from "@mui/material/Button";
-import { AddShoppingCart, Money, ShoppingBag, ShoppingCart } from "@mui/icons-material";
-import { motion } from "framer-motion";
+import {AddShoppingCart, Money, ShoppingBag, ShoppingCart} from "@mui/icons-material";
+import {motion} from "framer-motion";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {backend} from "../../axios";
+import axios, {backend} from "../../axios";
+import MenuItem from "@mui/material/MenuItem";
+import scrollTop from "../../utils/scrollTop";
 
 const Cars = () => {
-    const cars = [
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link1", brand: "Cadillac", release: "2007" },
-        { logo: "/cars/hero-car-3.png", price: 12313, name: "vehica-car-card-link123", brand: "BMW", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link344", brand: "Ferrari", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link2", brand: "BMW", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link13", brand: "Audi", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link1231", brand: "Ferrari", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link12123123", brand: "BMW", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link11123sa2", brand: "Cadillac", release: "2007" },
-        { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link2213123", brand: "Audi", release: "2007" },
-    ];
-
-
-
-
-
     const [selectBrand, setSelectBrand] = useState("All");
 
-    const brands = [{ name: "All" }, { name: "BMW" }, { name: "Ferrari" }, { name: "Cadillac" }, { name: "Audi" }];
+    const brands = [{name: "All"}, {name: "BMW"}, {name: "Ferrari"}, {name: "Cadillac"}, {name: "Audi"}];
 
     const [pagination, setPagination] = useState({
         currentPage: 1,
@@ -37,8 +34,27 @@ const Cars = () => {
     const queryClient = useQueryClient()
 
     // Queries
-    const query = useQuery({ queryKey: ['cars'], queryFn: fetch(backend +"/api/v1/cars") })
-    console.log( query)
+    const {data, refetch} = useQuery({
+        queryKey: ['cars', pagination.perPage, pagination.currentPage],
+        queryFn: async ()=> {
+            let query = `perPage=${pagination.perPage}&currentPage=${pagination.currentPage}`
+            return await axios.get("/api/v1/cars?"+query).then(res => res.data)
+        }
+    })
+
+
+    // Queries for fetch total cars
+    const {data: totalCars} = useQuery({
+        queryKey: ['total-cars'],
+        queryFn: async ()=> {
+            return await axios.get("/api/v1/cars/count").then(res => res.data)
+        }
+    })
+
+    useEffect(()=>{
+        setPagination(prev=>({...prev, totalItems: totalCars}))
+    }, [totalCars])
+
 
     const defaultProps = {
         options: [
@@ -55,80 +71,106 @@ const Cars = () => {
     };
     const [value, setValue] = React.useState(null);
 
-    function handleFilterByBrand(e, value){
+    function handleFilterByBrand(e, value) {
         let index = e.target.value
-        if(!isNaN(Number(index))) {
+        if (!isNaN(Number(index))) {
             setSelectBrand(defaultProps.options[index].title)
         } else {
             setSelectBrand("All")
         }
     }
 
-    function showPages(){
+    function showPages() {
 
     }
 
-    function handlePageChange(e, page){
+    function handlePageChange(e, page) {
         setPagination({...pagination, currentPage: page})
     }
 
-    let filtered = cars;
+    let filtered = data;
     if (selectBrand !== "All") {
-        filtered = cars.filter((car) => car.brand === selectBrand)
+        filtered = data.filter((car) => car.brand === selectBrand)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
+        scrollTop()
+        refetch()
 
     }, [pagination.currentPage, pagination.perPage])
 
 
+    function changeShowPerPage(e){
+        setPagination((prevState)=>({...prevState, perPage: e.target.value}))
+    }
 
     return (
         <Box className="container section" id="cars">
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, justifyContent: "space-between", alignItems: "center" }}>
+            <Box sx={{
+                display: "grid",
+                gridTemplateColumns: {xs: "1fr", md: "1fr 1fr"},
+                justifyContent: "space-between",
+                alignItems: "center"
+            }}>
 
                 <Box>
-                    <Typography component="h1"  fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.300">
+                    <Typography component="h1" fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.300">
                         Cars
                     </Typography>
 
                     <Typography component="h6" fontSize={14} mt={1} fontWeight={500} color="dark.100">
-                        Show result 10 in 2000
+                        Show result {filtered?.length} in {pagination.totalItems}
                     </Typography>
 
                 </Box>
 
-               <Box display="flex" justifyContent="flex-end" sx={{gap: '20px'}}>
-                   <Autocomplete
-                       {...flatProps}
-                       id="flat-demo"
-                       fullWidth={true}
-                       onChange={showPages}
-                       renderInput={(params) => (
-                           <TextField {...params} fullWidth={true} label="Show items" variant="standard" />
-                       )}
-                   />
+                <Box display="flex" justifyContent="flex-end" sx={{gap: '20px'}}>
 
-                   <Autocomplete
-                       {...flatProps}
-                       id="flat-demo"
-                       fullWidth={true}
-                       onChange={handleFilterByBrand}
-                       renderInput={(params) => (
-                           <TextField {...params} fullWidth={true} label="Filter with Brand" variant="standard" />
-                       )}
-                   />
-               </Box>
+                    <FormControl  variant="standard" fullWidth={true}>
+                        <InputLabel id="demo-simple-select-standard-label" sx={{px: 2}}>Show items</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            name="perPage"
+                            label={"Show items"}
+                            variant="outlined"
+                            value={pagination.perPage}
+                            size="small"
+                            onChange={changeShowPerPage}
+                        >
+                            {new Array(10).fill(1).map((_, opt) => (
+                                <MenuItem value={    (opt + 1) * 5} key={opt}>
+                                    {(opt + 1) * 5}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+
+                    <Autocomplete
+                        {...flatProps}
+                        id="flat-demo"
+                        fullWidth={true}
+                        onChange={handleFilterByBrand}
+                        renderInput={(params) => (
+                            <TextField {...params} fullWidth={true} label="Filter with Brand"        size="small" variant="outlined"/>
+                        )}
+                    />
+                </Box>
 
             </Box>
 
-            <Box mt={5} sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" } }}>
+            <Box mt={5} sx={{
+                display: "grid",
+                gap: 3,
+                gridTemplateColumns: {xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)"}
+            }}>
                 {filtered?.map((car, index) => (
-                    <motion.div layoutId={car.name} key={car.name} layout transition={{ duration: 0.5 }}>
-                        <Card className="card-shadow" sx={{borderRadius: 3}}>
-                            <CardMedia component="img" image={car.logo} alt="green iguana" />
 
-                            <CardContent sx={{ paddingBottom: "0!important" }}>
+                        <Card className="card-shadow" sx={{borderRadius: 3}}>
+                            <CardMedia component="img"  className="w-full card-image" image={car.image} alt="green iguana"/>
+
+                            <CardContent sx={{paddingBottom: "0!important"}}>
                                 <Typography gutterBottom variant="h6" component="div">
                                     {car.brand}
                                 </Typography>
@@ -142,22 +184,23 @@ const Cars = () => {
                             </CardContent>
                             <CardActions>
                                 <Button size="small" variant="outlined">
-                                    <ShoppingCart sx={{ fontSize: "18px", mr: "2px" }} />
+                                    <ShoppingCart sx={{fontSize: "18px", mr: "2px"}}/>
                                     Add To Cart
                                 </Button>
                                 <Button size="small" variant="outlined">
-                                    <Money sx={{ fontSize: "18px", mr: "2px" }} />
+                                    <Money sx={{fontSize: "18px", mr: "2px"}}/>
                                     Buy Now
                                 </Button>
                             </CardActions>
                         </Card>
-                    </motion.div>
+
                 ))}
             </Box>
 
-           <Box display="flex" justifyContent="center" mt={5} mb={10}>
-               <Pagination page={pagination.currentPage} onChange={handlePageChange}  count={pagination.totalItems}  variant="outlined" color="primary" />
-           </Box>
+            <Box display="flex" justifyContent="center" mt={5} mb={10}>
+                <Pagination page={pagination.currentPage} onChange={handlePageChange} count={pagination.totalItems}
+                            variant="outlined" color="primary"/>
+            </Box>
 
         </Box>
     );

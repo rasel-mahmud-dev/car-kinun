@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {
+    Alert,
     Box,
     Chip,
     Divider,
@@ -17,8 +18,10 @@ import {Form, Link} from "react-router-dom";
 import styles from "../../styles";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "../../axios";
+import ResponseMessage from "../../components/ResponseMessage/ResponseMessage";
 
 const Login = () => {
+
     const [data, setData] = useState({
         name: {label: "Enter name", required: true, type: "text", value: ""},
         model: {label: "Enter model", required: true, type: "text", value: ""},
@@ -32,25 +35,56 @@ const Login = () => {
 
     const [openPasswordResetModal, setOpenPassResetModal] = useState(false);
 
+    const [responseState, setResponseState] = useState({
+        message: "",
+        isLoading: false,
+        isSuccess: true
+    })
 
-    function imageUpload(){
 
+
+    function imageUpload(file){
+        const formdata = new FormData()
+        formdata.append("image", file)
+        formdata.append("key", import.meta.env.VITE_APP_IMGBB_API)
+
+        formdata.append("name", file.name)
+        return fetch("https://api.imgbb.com/1/upload", {
+            method: "POST",
+            "content-type": "multipart/formdata",
+            body: formdata
+        }).then((res=>res.json()))
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        axios.post("/api/v1/cars", {
-            name: data.name.value,
-            model: data.model.value,
-            price: data.price.value,
-            image: "",
-            brand: data.brand.value,
-            description: data.description.value,
-            userId: 12312321,
-            attributes: {autoPilot: true}
-        }).then(r => {
-            console.log(r)
-        })
+
+        if(!data.image.file){
+            return setResponseState({...responseState, isSuccess: false, message: "Please Select A Image"})
+        }
+
+        if(data.image.file.size > 1024 * 250){
+            return setResponseState({...responseState, isSuccess: false, message: "File size should less than 250kb"})
+        }
+
+
+        try {
+            let uploadResult = await imageUpload(data.image.file)
+            axios.post("/api/v1/cars", {
+                name: data.name.value,
+                model: data.model.value,
+                price: data.price.value,
+                image: uploadResult.data.url,
+                brand: data.brand.value,
+                description: data.description.value,
+                userId: 12312321,
+                attributes: {autoPilot: true}
+            }).then(r => {
+                console.log(r)
+            })
+        }catch (ex){
+            console.log(ex)
+        }
     }
 
     function handleClose() {
@@ -58,11 +92,13 @@ const Login = () => {
     }
 
     function handleChange(e) {
+        const {name, value, files} = e.target
         setData((prevState) => ({
             ...prevState,
-            [e.target.name]: {
-                ...prevState[e.target.name],
-                value: e.target.value,
+            [name]: {
+                ...prevState[name],
+                value: value,
+                file: name === "image" ? files[0] : "",
             },
         }));
     }
@@ -93,11 +129,17 @@ const Login = () => {
         <Box className="container" mt={4}>
             {passwordResetModal()}
 
+
             <Typography sx={{fontSize: 30, fontWeight: "bold", textAlign: "center"}}>Add Car</Typography>
 
             <Box width="100%" sx={{maxWidth: 600, m: "20px auto", p: 3, borderRadius: 2, boxSizing: "border-box"}}
                  className="card-shadow">
 
+                <ResponseMessage
+                    setClose={()=>setResponseState(({...responseState, message: ""}))}
+                    state={responseState}>
+
+                </ResponseMessage>
 
                 <Form onSubmit={handleSubmit}>
                     <Box>
