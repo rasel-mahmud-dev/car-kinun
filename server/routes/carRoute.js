@@ -14,5 +14,30 @@ router.get("/", async function (req, res, next) {
     }
 })
 
+router.post("/", async function (req, res, next) {
+    try {
+        const {name, price, brand, description, image, userId, model, attributes} = req.body
+        let newCar = new Car({
+            name,
+            price,
+            image,
+            model,
+            brand,
+            userId,
+            description,
+            attributes,
+        })
+
+        newCar = await newCar.save()
+        if (newCar) {
+            res.status(201).send(newCar)
+        } else {
+            res.send("Car insert fail")
+        }
+    } catch (ex) {
+        next(ex)
+    }
+})
+
 
 export default router

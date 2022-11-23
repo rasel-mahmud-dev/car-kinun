@@ -7,7 +7,22 @@ import cors from 'cors'
 const app = express()
 app.use(express.json())
 
-app.use(cors())
+const whitelist = [process.env.FRONTEND]
+const corsOptions = {
+    credentials: true,
+    origin: function (origin, callback) {
+
+        if(whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+
+        } else {
+            // no access
+            callback(null, false)
+        }
+    }
+}
+
+app.use(cors(corsOptions))
 
 app.get("/", (req, res)=>{
     res.send("hello world")

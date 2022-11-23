@@ -29,7 +29,6 @@ class Common {
 
     constructor(collectionName) {
         // when call with new keyword extend classes...
-        // this.collectionName = collectionName;
         Common.collectionName = collectionName;
     }
 
@@ -47,6 +46,24 @@ class Common {
             }
         });
     }
+
+    save(){
+        return new Promise(async (resolve, reject)=>{
+            try{
+                let {collectionName, ...other} = this
+                let insertResult = await (await Common.Db(Common.collectionName)).insertOne(other)
+                if(insertResult.insertedId){
+                    other._id = insertResult.insertedId
+                    resolve(other)
+                } else {
+                    resolve(null)
+                }
+            } catch (ex){
+                reject(ex)
+            }
+        })
+    }
+
 
     static get collection(){
         return Common.Db(this.collectionName)

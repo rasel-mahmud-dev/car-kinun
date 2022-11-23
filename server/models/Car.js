@@ -10,17 +10,19 @@ class Car extends Common{
     brand = ""
     userId = ""
     description = ""
+    attributes = {}
     createdAt = new Date()
     updatedAt = new Date()
 
     constructor(data) {
         super(Car.collectionName)
         this.name = data.name
-        this.price = data.price
+        this.price = Number(data.price)
         this.model = data.model
         this.brand = data.brand
         this.userId = data.userId
         this.description = data.description
+        this.attributes = data.attributes
     }
 }
 
