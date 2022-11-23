@@ -17,5 +17,10 @@ app.get("/", (req, res)=>{
 app.use(routes)
 
 
+app.use((err, req, res)=>{
+    res.status(500).json({message: err.message})
+})
+
+
 const PORT = process.env.PORT || 4000
 app.listen(PORT)

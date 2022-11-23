@@ -25,36 +25,36 @@ function mongoConnect() {
 
 class Common {
     collectionName = "";
+    static collectionName = "";
 
     constructor(collectionName) {
         // when call with new keyword extend classes...
-        this.collectionName = collectionName;
+        // this.collectionName = collectionName;
+        Common.collectionName = collectionName;
     }
 
     static databaseConnection;
 
-    static get Db(){
+    static Db(collection){
         return new Promise(async (resolve, reject) => {
             try {
                 if (!Common.databaseConnection) {
                     Common.databaseConnection = await mongoConnect();
                 }
-                resolve(Common.databaseConnection);
+                resolve(Common.databaseConnection.collection(collection));
             } catch (ex) {
                 reject(ex);
             }
         });
     }
 
+    static get collection(){
+        return Common.Db(this.collectionName)
+    }
 
-    static async find(){
-      return new Promise(async (resolve, reject)=>{
-        try {
-
-        }catch (ex){
-
-        }
-      })
+    static deleteOne(filter){
+        // Common.Db(this.collectionName).deleteOne(filter)
+        // return
     }
 }
 
