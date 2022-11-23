@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Typography from "@mui/material/Typography";
-import { Box, Card, CardActions, CardContent, CardMedia, Grid } from "@mui/material";
+import {Autocomplete, Box, Card, CardActions, CardContent, CardMedia, Grid, Pagination, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import { AddShoppingCart, Money, ShoppingBag, ShoppingCart } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
-const PopularCars = () => {
+const Cars = () => {
     const cars = [
         { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link1", brand: "Cadillac", release: "2007" },
         { logo: "/cars/hero-car-3.png", price: 12313, name: "vehica-car-card-link123", brand: "BMW", release: "2007" },
@@ -22,25 +22,94 @@ const PopularCars = () => {
 
     const brands = [{ name: "All" }, { name: "BMW" }, { name: "Ferrari" }, { name: "Cadillac" }, { name: "Audi" }];
 
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        perPage: 10,
+        totalItems: 30000,
+    })
+
+
+
+    const defaultProps = {
+        options: [
+            {title: "BMW"},
+            {title: "Toyota"},
+            {title: "Cadillac"},
+            {title: "Ferrari"},
+            {title: "Audi"}
+        ],
+        getOptionLabel: (option) => option.title,
+    };
+    const flatProps = {
+        options: defaultProps.options.map((option) => option.title),
+    };
+    const [value, setValue] = React.useState(null);
+
+    function handleFilterByBrand(e, value){
+        let index = e.target.value
+        if(!isNaN(Number(index))) {
+            setSelectBrand(defaultProps.options[index].title)
+        } else {
+            setSelectBrand("All")
+        }
+    }
+
+    function showPages(){
+
+    }
+
+    function handlePageChange(e, page){
+        setPagination({...pagination, currentPage: page})
+    }
+
     let filtered = cars;
     if (selectBrand !== "All") {
         filtered = cars.filter((car) => car.brand === selectBrand)
     }
 
+    useEffect(()=>{
+
+    }, [pagination.currentPage, pagination.perPage])
+
+
+
     return (
         <Box className="container section" id="cars">
-            <Box sx={{ display: { xs: "block", md: "flex" }, justifyContent: "space-between", alignItems: "center" }}>
-                <Typography component="h1" textAlign={{ xs: "center" }} fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.300">
-                    Popular Cars
-                </Typography>
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, justifyContent: "space-between", alignItems: "center" }}>
 
-                <Grid display="flex" sx={{ gap: 2, justifyContent: { xs: "center" } }} mt={{ xs: 4, md: 0 }}>
-                    {brands.map((brand) => (
-                        <Button onClick={() => setSelectBrand(brand.name)} variant={selectBrand === brand.name ? "contained" : "outlined"}>
-                            {brand.name}
-                        </Button>
-                    ))}
-                </Grid>
+                <Box>
+                    <Typography component="h1"  fontSize={40} fontWeight={"bold"} lineHeight={0.9} color="dark.300">
+                        Cars
+                    </Typography>
+
+                    <Typography component="h6" fontSize={14} mt={1} fontWeight={500} color="dark.100">
+                        Show result 10 in 2000
+                    </Typography>
+
+                </Box>
+
+               <Box display="flex" justifyContent="flex-end" sx={{gap: '20px'}}>
+                   <Autocomplete
+                       {...flatProps}
+                       id="flat-demo"
+                       fullWidth={true}
+                       onChange={showPages}
+                       renderInput={(params) => (
+                           <TextField {...params} fullWidth={true} label="Show items" variant="standard" />
+                       )}
+                   />
+
+                   <Autocomplete
+                       {...flatProps}
+                       id="flat-demo"
+                       fullWidth={true}
+                       onChange={handleFilterByBrand}
+                       renderInput={(params) => (
+                           <TextField {...params} fullWidth={true} label="Filter with Brand" variant="standard" />
+                       )}
+                   />
+               </Box>
+
             </Box>
 
             <Box mt={5} sx={{ display: "grid", gap: 3, gridTemplateColumns: { xs: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" } }}>
@@ -75,8 +144,13 @@ const PopularCars = () => {
                     </motion.div>
                 ))}
             </Box>
+
+           <Box display="flex" justifyContent="center" mt={5} mb={10}>
+               <Pagination page={pagination.currentPage} onChange={handlePageChange}  count={pagination.totalItems}  variant="outlined" color="primary" />
+           </Box>
+
         </Box>
     );
 };
 
-export default PopularCars;
+export default Cars;

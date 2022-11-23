@@ -8,9 +8,9 @@ import {Money, ShoppingCart} from "@mui/icons-material";
 const Upcoming = () => {
 
     const upcomingCars = [
-        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
-        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
-        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
+        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", date: 'Coming on 02 jan 2025', desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
+        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", date: 'Coming on 01 may 2024', desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
+        { logo: "/cars/apps-bg.png", name: "Philosophy that addresses topics such as Goodness", date: 'Coming on 12 march 2023', desc: "Struggling to sell onee currently on the market won't stop actress and singer...", brand: "Audi" },
     ]
 
     return (
@@ -45,7 +45,7 @@ const Upcoming = () => {
                                  <Typography variant="p" color="dark.200"  component="p">
                                     {car.desc}
                                 </Typography>
-                                <Chip sx={{mt:2, color: "white"}} label="Coming on 12 march 2023" color="primary" />
+                                <Chip sx={{mt:2, color: "white"}} label={car.date} color="primary" />
 
 
 
