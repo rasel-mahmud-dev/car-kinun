@@ -4,6 +4,8 @@ import {Autocomplete, Box, Card, CardActions, CardContent, CardMedia, Grid, Pagi
 import Button from "@mui/material/Button";
 import { AddShoppingCart, Money, ShoppingBag, ShoppingCart } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {backend} from "../../axios";
 
 const Cars = () => {
     const cars = [
@@ -18,6 +20,10 @@ const Cars = () => {
         { logo: "/cars/apps-bg.png", price: 12313, name: "vehica-car-card-link2213123", brand: "Audi", release: "2007" },
     ];
 
+
+
+
+
     const [selectBrand, setSelectBrand] = useState("All");
 
     const brands = [{ name: "All" }, { name: "BMW" }, { name: "Ferrari" }, { name: "Cadillac" }, { name: "Audi" }];
@@ -28,7 +34,11 @@ const Cars = () => {
         totalItems: 30000,
     })
 
+    const queryClient = useQueryClient()
 
+    // Queries
+    const query = useQuery({ queryKey: ['cars'], queryFn: fetch(backend +"/api/v1/cars") })
+    console.log( query)
 
     const defaultProps = {
         options: [
